@@ -79,35 +79,37 @@ func checkDuplicates(files map[int64][]string, sizes []int64) (ret []fileInfo) {
 	if answer == "yes" {
 		if len(sizes) > 0 {
 			for _, size := range sizes {
-				var duplicates = make(map[string][]string)
-				for _, path := range files[size] {
-					file, err := os.Open(path)
-					if err != nil {
-						log.Fatal(err)
-					}
-					md5Hash := md5.New()
-					if _, err := io.Copy(md5Hash, file); err != nil {
-						log.Fatal(err)
-					}
-					hash := string(md5Hash.Sum(nil))
-					duplicates[hash] = append(duplicates[hash], path)
-					err = file.Close()
-					if err != nil {
-						log.Fatal(err)
-					}
-				}
-				printBytes := true
-				for hash, paths := range duplicates {
-					if len(paths) > 1 {
-						if printBytes {
-							fmt.Println(size, "bytes")
-							printBytes = false
+				if len(files[size]) > 1 {
+					var duplicates = make(map[string][]string)
+					for _, path := range files[size] {
+						file, err := os.Open(path)
+						if err != nil {
+							log.Fatal(err)
 						}
-						fmt.Printf("Hash: %x\n", hash)
-						for _, path := range paths {
-							fmt.Printf("%v. %s\n", counter, path)
-							ret = append(ret, fileInfo{size: size, path: path})
-							counter += 1
+						md5Hash := md5.New()
+						if _, err := io.Copy(md5Hash, file); err != nil {
+							log.Fatal(err)
+						}
+						hash := string(md5Hash.Sum(nil))
+						duplicates[hash] = append(duplicates[hash], path)
+						err = file.Close()
+						if err != nil {
+							log.Fatal(err)
+						}
+					}
+					printBytes := true
+					for hash, paths := range duplicates {
+						if len(paths) > 1 {
+							if printBytes {
+								fmt.Println(size, "bytes")
+								printBytes = false
+							}
+							fmt.Printf("Hash: %x\n", hash)
+							for _, path := range paths {
+								fmt.Printf("%v. %s\n", counter, path)
+								ret = append(ret, fileInfo{size: size, path: path})
+								counter += 1
+							}
 						}
 					}
 				}
