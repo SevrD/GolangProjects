@@ -13,5 +13,11 @@ func main() {
 	var number int
 	fmt.Print("Enter number: ")
 	fmt.Scanf("%d", &number)
-	fmt.Printf("Factorial: %d", fact(number))
+	fmt.Printf("Factorial recursion: %d\n", fact(number))
+
+	result := 1
+	for i := 2; i <= number; i++ {
+		result *= i
+	}
+	fmt.Printf("Factorial loop: %d\n", result)
 }
