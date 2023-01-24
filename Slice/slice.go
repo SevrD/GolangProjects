@@ -26,9 +26,13 @@ func main() {
 
 func fill(result *[][]string, in []string, out []string) {
 
+	var slice []string
+	if len(in) > 0 {
+		slice = make([]string, 0, len(in)-1)
+	}
 	for i, number := range in {
 		newOut := append(out, number)
-		slice := make([]string, 0, len(in)-1)
+		slice = slice[:0]
 		slice = append(slice, in[:i]...)
 		slice = append(slice, in[i+1:]...)
 		fill(result, slice, newOut)
