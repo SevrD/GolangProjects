@@ -35,8 +35,8 @@ func sort(arr []int64, cond func(a int64, b int64) bool) []int64 {
 		return arr
 	}
 	base := len(arr) / 2
-	left := make([]int64, 0)
-	right := make([]int64, 0)
+	left := make([]int64, 0, len(arr)-1)
+	right := make([]int64, 0, len(arr)-1)
 	for i := 0; i < len(arr); i++ {
 		if i == base {
 			continue
