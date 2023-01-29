@@ -11,8 +11,7 @@ import (
 func main() {
 	var txt string
 	fmt.Println("Введите последовательность чисел через запятую: ")
-	//	fmt.Scanln(&txt)
-	txt = "4,8,1,0,4,3"
+	fmt.Scanln(&txt)
 	inputStr := strings.Split(txt, ",")
 	numbers := make([]int64, 0, len(inputStr))
 	for _, numberStr := range inputStr {
@@ -21,8 +20,11 @@ func main() {
 	}
 	fmt.Println(sort(numbers, cond1))
 	fmt.Println(sort(numbers, cond2))
-	fmt.Println(sort2(numbers, cond1))
-	fmt.Println(sort2(numbers, cond2))
+	sort2(numbers, cond1)
+	fmt.Println(numbers)
+
+	sort2(numbers, cond2)
+	fmt.Println(numbers)
 }
 
 func cond1(a int64, b int64) bool {
@@ -60,9 +62,9 @@ func sort(arr []int64, cond func(a int64, b int64) bool) []int64 {
 	return append(left, right...)
 }
 
-func sort2(arr []int64, cond func(a int64, b int64) bool) []int64 {
+func sort2(arr []int64, cond func(a int64, b int64) bool) {
 	if len(arr) <= 1 {
-		return arr
+		return
 	}
 	base := len(arr) / 2
 	var l, r, lf, rf int
@@ -107,16 +109,12 @@ func sort2(arr []int64, cond func(a int64, b int64) bool) []int64 {
 		}
 
 	}
-	var left []int64
-	var right []int64
 	if base > 0 {
-		left = sort2(arr[:base], cond)
+		sort2(arr[:base], cond)
 	}
 	if base < len(arr)-1 {
-		right = sort2(arr[base+1:], cond)
+		sort2(arr[base+1:], cond)
 	}
-	left = append(left, arr[base])
-	return append(left, right...)
 }
 
 func move(arr []int64, from int, to int) {
