@@ -39,16 +39,27 @@ func cond2(a int, b int) bool {
 }
 
 func quicksort(arr []int, lo int, hi int, cond func(a int, b int) bool, wg *sync.WaitGroup) {
-	defer wg.Done()
+	if wg != nil {
+		defer wg.Done()
+	}
 	if lo < hi {
-		p := partition(arr, lo, hi, cond, wg)
-		go quicksort(arr, lo, p, cond, wg)
-		go quicksort(arr, p+1, hi, cond, wg)
+		if hi-lo > 50000 {
+			p := partition(arr, lo, hi, cond, wg)
+			go quicksort(arr, lo, p, cond, wg)
+			go quicksort(arr, p+1, hi, cond, wg)
+		} else {
+			p := partition(arr, lo, hi, cond, nil)
+			quicksort(arr, lo, p, cond, nil)
+			quicksort(arr, p+1, hi, cond, nil)
+		}
+
 	}
 }
 
 func partition(arr []int, low int, hight int, cond func(a int, b int) bool, wg *sync.WaitGroup) int {
-	wg.Add(2)
+	if wg != nil {
+		wg.Add(2)
+	}
 	pivot := arr[(hight+low)/2]
 	for {
 		for cond(arr[low], pivot) {
